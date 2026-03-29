@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import UserProfile from '../components/UserProfile';
 import VotingGuide from '../components/VotingGuide';
@@ -26,12 +26,6 @@ export default function VoterDashboard() {
   const countdownIntervalRef = useRef(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     fetchElections();
 
     // Initialize OpenCV and load Haar cascade

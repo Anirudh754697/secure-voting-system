@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
@@ -8,13 +7,6 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!token || user.role !== 'ROLE_ADMINISTRATOR') {
-      navigate('/login');
-      return;
-    }
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     fetchUsers();
   }, []);
 
@@ -50,7 +42,7 @@ export default function AdminDashboard() {
             Total count: {users.length}
           </span>
         </div>
-        
+
         {loading ? (
           <div className="text-center py-12"><div className="animate-pulse flex flex-col items-center"><div className="h-10 w-10 bg-gray-200 rounded-full mb-4"></div><div className="h-4 w-24 bg-gray-100 rounded"></div></div></div>
         ) : (
@@ -72,19 +64,18 @@ export default function AdminDashboard() {
                     <td className="p-4 font-bold text-gray-800">{u.username}</td>
                     <td className="p-4 text-gray-500 font-medium">{u.email}</td>
                     <td className="p-4">
-                      <span className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-widest border ${
-                        u.role === 'ROLE_ADMINISTRATOR' ? 'bg-purple-50 text-purple-700 border-purple-200 shadow-sm' :
+                      <span className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-widest border ${u.role === 'ROLE_ADMINISTRATOR' ? 'bg-purple-50 text-purple-700 border-purple-200 shadow-sm' :
                         u.role === 'ROLE_OFFICER' ? 'bg-blue-50 text-blue-700 border-blue-200 shadow-sm' :
-                        'bg-gray-50 text-gray-600 border-gray-200'
-                      }`}>
+                          'bg-gray-50 text-gray-600 border-gray-200'
+                        }`}>
                         {u.role.replace('ROLE_', '')}
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                       <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600">
-                         <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.6)]"></span>
-                         Active
-                       </span>
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-600">
+                        <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.6)]"></span>
+                        Active
+                      </span>
                     </td>
                   </tr>
                 ))}

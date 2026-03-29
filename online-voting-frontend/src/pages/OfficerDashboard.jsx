@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { indiaStatesDistricts } from '../data/indiaStatesDistricts';
 
@@ -24,7 +24,7 @@ export default function OfficerDashboard() {
 
   const fetchElections = async () => {
     try {
-      const { data } = await axios.get('/api/officer/elections');
+      const { data } = await api.get('/officer/elections');
       setElections(data);
     } catch {
       setMessage('Failed to load elections.');
@@ -32,14 +32,11 @@ export default function OfficerDashboard() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!token || (user.role !== 'ROLE_OFFICER' && user.role !== 'ROLE_ADMINISTRATOR')) {
+    if (user.role !== 'ROLE_OFFICER' && user.role !== 'ROLE_ADMINISTRATOR') {
       navigate('/login');
       return;
     }
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchElections();
   }, [navigate]);
 

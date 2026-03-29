@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
@@ -20,16 +20,16 @@ export default function Login() {
 
     try {
       const endpoint = isLogin ? '/api/auth/signin' : '/api/auth/signup';
-      const payload = isLogin 
+      const payload = isLogin
         ? { username: formData.username, password: formData.password }
         : formData;
 
       const response = await axios.post(endpoint, payload);
-      
+
       if (isLogin) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data));
-        
+
         if (response.data.role === 'ROLE_VOTER' && !response.data.profileCompleted) {
           navigate('/complete-profile');
         } else if (response.data.role === 'ROLE_ADMINISTRATOR') {
@@ -55,7 +55,7 @@ export default function Login() {
       <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
         {isLogin ? 'Welcome Back' : 'Create Account'}
       </h2>
-      
+
       {error && (
         <div className={`p-4 mb-4 text-sm rounded-lg border-l-4 ${error.includes('successful') ? 'bg-green-50 text-green-800 border-green-500' : 'bg-red-50 text-red-800 border-red-500'}`}>
           {error}
