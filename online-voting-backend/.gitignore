@@ -38,4 +38,4 @@ build/
 .env.*.local
 
 # Local dev secrets (DB credentials etc.)
-src/main/resources/application-local.properties
+
